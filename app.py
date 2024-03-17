@@ -41,21 +41,21 @@ with ui.layout_columns():
         ui.card_header("Penguins Data Table")
         @render.data_frame
         def render_penguins_table():
-            return penguins_df
+            return filtered_data()
         
 with ui.layout_columns(): 
     with ui.card(full_screen=True):
         ui.card_header("Penguins Data Grid")
         @render.data_frame
         def penguins_data():
-            return render.DataGrid(penguins_df, row_selection_mode="multiple") 
+            return render.DataGrid(data=filtered_data(), row_selection_mode="multiple") 
 
 # Plotly histogram showing all species
 with ui.card(full_screen=True):
     ui.card_header("Plotly Histogram")
     @render_plotly  
     def plot_plt():  
-        return px.histogram(penguins_df,
+        return px.histogram(filtered_data(),
             x=input.selected_attribute(),
             nbins=input.plotly_bin_count(),
             color="species",
@@ -68,7 +68,7 @@ with ui.card(full_screen=True):
 
     @render.plot(alt="Seaborn Histogram")
     def seaborn_histogram():
-        histplot = sns.histplot(data=penguins_df, x=input.selected_attribute(), bins=input.seaborn_bin_count())
+        histplot = sns.histplot(filtered_data(), x=input.selected_attribute(), bins=input.seaborn_bin_count())
         histplot.set_title("Penguin Data")
         histplot.set_xlabel("Selected Attribute")
         histplot.set_ylabel("Count")
@@ -80,7 +80,7 @@ with ui.card(full_screen=True):
 
     @render_plotly
     def plotly_scatterplot():
-        return px.scatter(penguins_df,
+        return px.scatter(filtered_data(),
             x="bill_depth_mm",
             y="flipper_length_mm",
             color="species",
@@ -96,7 +96,7 @@ with ui.card(full_screen=True):
     @render_plotly
     def scatter_3d_plot():
         return px.scatter_3d(
-            penguins_df,
+            filtered_data(),
             x="body_mass_g",
             y="bill_depth_mm",
             z="flipper_length_mm",
