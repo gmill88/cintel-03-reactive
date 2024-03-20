@@ -29,11 +29,15 @@ with ui.sidebar(open="open"):
     ui.input_checkbox_group("species_list", "Selected species", 
                             ["Adelie", "Chinstrap", "Gentoo"], selected=["Adelie", "Chinstrap"], inline=True)
 
+        # Create a checkbox group input to filter the island
+    ui.input_checkbox_group("island_list", "Selected island", 
+                            ["Torgersen", "Biscoe", "Dream"], selected=["Torgersen", "Biscoe", "Dream"], inline=True)
+    
     # Add a horizontal rule to the sidebar
     ui.hr()
 
     # Add a hyperlink to the sidebar
-    ui.a("Miller Repo", href="https://github.com/gmill88/cintel-02-data", target="_blank")
+    ui.a("Miller Repo", href="https://github.com/gmill88/cintel-03-reactive", target="_blank")
     
     # display data grid and data table
 with ui.layout_columns():        
@@ -84,6 +88,7 @@ with ui.card(full_screen=True):
             x="bill_depth_mm",
             y="flipper_length_mm",
             color="species",
+            hover_name="island",
             title="Scatterplot of Bill Length vs. Body Mass by Species",
             labels={
                 "bill_depth_mm": "Bill Depth (mm)",
@@ -101,11 +106,13 @@ with ui.card(full_screen=True):
             y="bill_depth_mm",
             z="flipper_length_mm",
             color="species",
+            hover_name="island",
             title="3D Scatter Plot of Body Mass, Bill Length, and Flipper Length",
             labels={
                 "body_mass_g": "Body Mass (g)",
                 "bill_depth_mm": "Bill Depth (mm)",
                 "flipper_length_mm": "Flipper Length (mm)"})
+
 
 # --------------------------------------------------------
 # Reactive calculations and effects
@@ -118,4 +125,5 @@ with ui.card(full_screen=True):
 
 @reactive.calc
 def filtered_data():
-    return penguins_df
+    return penguins_df[penguins_df["species"].isin(input.species_list()) & penguins_df["island"].isin(input.island_list())]
+    
